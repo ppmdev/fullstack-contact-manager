@@ -1,8 +1,17 @@
 // Import syntax isn't used here because its not using babel to convert to ES6 syntax. CommonJS syntax is used instead.
 const express = require("express");
 
+// Import the Database connection module
+const connectDB = require("./config/db");
+
 // Initialize express server assigned to the variable app.
 const app = express();
+
+// Connect the database
+connectDB();
+
+// Init middleware
+app.use(express.json({ extended: false }));
 
 // Add a route (endpoint) that the API. This is done using a method like the following app.[type of request]().
 // The get method takes in the path and then a request response object.
