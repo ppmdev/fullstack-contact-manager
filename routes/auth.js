@@ -33,9 +33,10 @@ router.post(
     check("password", "Password is require").exists()
   ],
   async (req, res) => {
-    // assign any errors from the request using the validationResult method to a variable.
+    /* assign any errors from the request using the validationResult method to a variable. */
     const errors = validationResult(req);
-    // Check if the errors variable is not empty, if it contains errors then return the errors.
+    /* Check if the errors variable is not empty, if it contains something then there
+     * was an error. The function then returns the errors. */
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -43,16 +44,17 @@ router.post(
     const { email, password } = req.body;
 
     try {
+      /** Mongoose function to find a user in the database by the email provided in the req.body */
       let user = await User.findOne({ email: email });
 
       if (!user) {
-        return res.status(400).json({ msg: "Email or password incorrect" });
+        return res.status(400).json({ msg: "Invalid credentials" });
       }
-
+      /** bcrypt compares the password entered and the stored password to see if they match */
       const isMatch = await bcrypt.compare(password, user.password);
-
+      /** If the passwords don't match, respond with a 400 (unauthorized) status and a json object containing a message */
       if (!isMatch) {
-        return res.status(400).json({ msg: "Email or password incorrect" });
+        return res.status(400).json({ msg: "Invalid credentials" });
       }
 
       // Create a payload variable for the jwt sign() method.
@@ -62,11 +64,11 @@ router.post(
         }
       };
 
-      // jwt sign method that takes in a payload(the users id), this user id will be used to access
-      // a certain users contacts, the jwt secret for the app which is pulled from the config file using
-      // the get method, an object with options (in this case an expires in property) and finally a callback
-      // which takes in an error argument and then token. If there are no errors the response object will
-      // return the jwt token
+      /* jwt sign method that takes in a payload(the users id), this user id will be used to access
+       * a certain users contacts, the jwt secret for the app which is pulled from the config file using
+       * the get method, an object with options (in this case an expires in property) and finally a callback
+       * which takes in an error argument and the JWT token. If there are no errors the response object will
+       * return the jwt token containing the user who has been authenticated */
       jwt.sign(
         payload,
         config.get("jwtSecret"),

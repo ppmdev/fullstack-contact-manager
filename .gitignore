@@ -1,4 +1,20 @@
-# ignore node modules folder
+# dependencies
 node_modules/
-# ignore config default.json file
+
+# production
+/client/build
+
+# misc
+.DS_Store
+/client/.env.local
+/client/.env.development.local
+/client/.env.test.local
+/client/.env.production.local
+
+
+# config variables
 config/default.json
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
